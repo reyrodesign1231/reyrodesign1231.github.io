@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nordlys Atlas — кейс data-платформы</title>
+  <meta name="description" content="Nordlys Atlas — концепт data-платформы для мониторинга арктических экспедиций, климатических сигналов и операционных рисков." />
+  <meta name="theme-color" content="#071012" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{min-height:100vh;background:#f5f1e8;color:#071012;font-family:'Onest',sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .shell{width:min(1180px,calc(100% - 40px));margin:0 auto}
+    .site-header{position:fixed;top:0;left:0;right:0;z-index:20;padding:18px 0;color:#f9f6ef;mix-blend-mode:difference}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.03em}
+    .mark{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9fff8,#21c9b7 42%,#0e5560 70%,#071012);box-shadow:0 0 24px rgba(33,201,183,.55)}
+    .nav{display:flex;align-items:center;gap:22px;font-size:13px;color:rgba(249,246,239,.74)}
+    .nav a{transition:.25s ease}
+    .nav a:hover{color:#fff}
+    .hero{position:relative;min-height:100svh;background:#071012;color:#f9f6ef;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 18% 18%,rgba(33,201,183,.38),transparent 28%),radial-gradient(circle at 72% 42%,rgba(216,188,126,.20),transparent 32%),linear-gradient(135deg,#071012,#0f2629 48%,#051013);animation:drift 16s ease-in-out infinite alternate}
+    .hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(to bottom,black,transparent 82%)}
+    @keyframes drift{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.06)}}
+    .aurora{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;mix-blend-mode:screen;opacity:.92}
+    .aurora span{position:absolute;left:-12%;right:-12%;height:34vh;border-radius:50%;filter:blur(28px);opacity:.54;transform-origin:center;animation:auroraFlow 13s ease-in-out infinite alternate}
+    .aurora span:nth-child(1){top:8%;background:linear-gradient(90deg,transparent,rgba(33,201,183,.0),rgba(33,201,183,.56),rgba(216,188,126,.18),transparent);transform:rotate(-8deg)}
+    .aurora span:nth-child(2){top:20%;background:linear-gradient(90deg,transparent,rgba(88,144,255,.18),rgba(33,201,183,.34),rgba(249,246,239,.12),transparent);transform:rotate(7deg);animation-delay:-4s}
+    .aurora span:nth-child(3){top:2%;background:linear-gradient(90deg,transparent,rgba(216,188,126,.16),rgba(33,201,183,.28),transparent);transform:rotate(2deg);animation-delay:-7s}
+    @keyframes auroraFlow{from{transform:translateX(-4%) rotate(var(--r, -6deg)) scaleY(.72);opacity:.28}to{transform:translateX(5%) rotate(5deg) scaleY(1.05);opacity:.7}}
+    .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center;min-height:100svh;padding:110px 0 64px}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;font-size:13px;text-transform:uppercase;letter-spacing:.18em;color:rgba(249,246,239,.62)}
+    .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:#21c9b7}
+    h1{font-size:clamp(52px,7.6vw,112px);line-height:.88;letter-spacing:-.075em;font-weight:700;max-width:9ch}
+    .hero-copy{margin-top:28px;max-width:560px;font-size:18px;line-height:1.65;color:rgba(249,246,239,.68)}
+    .hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px;max-width:560px}
+    .pill{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:13px 20px;font-size:14px;font-weight:600}
+    .pill.primary{background:#f9f6ef;color:#071012}
+    .pill.ghost{border:1px solid rgba(249,246,239,.22);color:#f9f6ef}
+    .atlas-card{position:relative;border:1px solid rgba(249,246,239,.16);background:rgba(249,246,239,.075);backdrop-filter:blur(22px);border-radius:28px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.34)}
+    .map-panel{position:relative;min-height:520px;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#102a2f,#061114)}
+    .map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:38px 38px}
+    .scan-sweep{position:absolute;inset:-30%;background:conic-gradient(from 0deg,transparent 0 72%,rgba(33,201,183,.0) 74%,rgba(33,201,183,.42) 77%,transparent 81%);animation:sweep 7.5s linear infinite;opacity:.7}
+    @keyframes sweep{to{transform:rotate(360deg)}}
+    .route{position:absolute;inset:42px;border:1px solid rgba(33,201,183,.18);border-radius:50%;transform:rotate(-18deg);box-shadow:inset 0 0 38px rgba(33,201,183,.04)}
+    .route:nth-child(2){inset:96px 54px 76px 84px;transform:rotate(24deg)}
+    .route::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#d8bc7e;box-shadow:0 0 18px rgba(216,188,126,.88);left:50%;top:-4px;animation:routePacket 5.8s linear infinite}
+    .route:nth-child(2)::after{animation-duration:7.2s;animation-delay:-2.4s}
+    @keyframes routePacket{to{transform:rotate(360deg);transform-origin:0 calc(50% + 144px)}}
+    .node{position:absolute;width:13px;height:13px;border-radius:50%;background:#21c9b7;box-shadow:0 0 0 8px rgba(33,201,183,.12),0 0 28px rgba(33,201,183,.9);animation:nodePulse 2.4s ease-in-out infinite}
+    .node:nth-of-type(2){animation-delay:.35s}.node:nth-of-type(3){animation-delay:.7s}.node:nth-of-type(4){animation-delay:1.05s}
+    @keyframes nodePulse{0%,100%{transform:scale(1);box-shadow:0 0 0 8px rgba(33,201,183,.12),0 0 28px rgba(33,201,183,.9)}50%{transform:scale(1.28);box-shadow:0 0 0 16px rgba(33,201,183,.04),0 0 42px rgba(33,201,183,1)}}
+    .n1{left:21%;top:30%}.n2{left:62%;top:22%}.n3{left:70%;top:64%}.n4{left:32%;top:72%}
+    .weather-band{position:absolute;left:22px;right:22px;bottom:110px;height:58px;border:1px solid rgba(249,246,239,.12);border-radius:18px;background:rgba(7,16,18,.46);overflow:hidden}
+    .weather-band::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(33,201,183,.05),rgba(33,201,183,.44),rgba(216,188,126,.2),rgba(33,201,183,.05));transform:translateX(-100%);animation:bandScan 4.8s cubic-bezier(.16,1,.3,1) infinite}
+    .weather-band span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:rgba(249,246,239,.58)}
+    @keyframes bandScan{45%,100%{transform:translateX(100%)}}
+    .operator-figure{position:absolute;right:34px;bottom:24px;width:118px;height:174px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.45));animation:operatorBreathe 3.8s ease-in-out infinite;z-index:3}
+    @keyframes operatorBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    .operator-head{position:absolute;left:37px;top:0;width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,#f9f6ef,#9adbd1 58%,#1b696e);box-shadow:inset -8px -10px 18px rgba(7,16,18,.34),0 0 24px rgba(33,201,183,.22)}
+    .operator-visor{position:absolute;left:44px;top:15px;width:30px;height:10px;border-radius:999px;background:#071012;box-shadow:0 0 14px rgba(33,201,183,.55)}
+    .operator-body{position:absolute;left:24px;top:48px;width:70px;height:92px;border-radius:30px 30px 22px 22px;background:linear-gradient(160deg,#174348,#0a1b1e);border:1px solid rgba(249,246,239,.16);overflow:hidden}
+    .operator-body::before{content:"";position:absolute;left:14px;right:14px;top:18px;height:6px;border-radius:999px;background:#21c9b7;box-shadow:0 0 18px rgba(33,201,183,.8);animation:operatorPulse 2s ease-in-out infinite}
+    @keyframes operatorPulse{50%{opacity:.35;transform:scaleX(.62)}}
+    .operator-arm{position:absolute;left:0;top:72px;width:52px;height:15px;border-radius:999px;background:#123439;transform:rotate(-28deg);transform-origin:right center}
+    .operator-tablet{position:absolute;left:2px;top:94px;width:46px;height:32px;border-radius:8px;background:#071012;border:1px solid rgba(249,246,239,.22);box-shadow:0 0 24px rgba(33,201,183,.18)}
+    .operator-tablet::before{content:"";position:absolute;left:7px;right:7px;top:8px;height:4px;border-radius:999px;background:#21c9b7;box-shadow:0 0 12px rgba(33,201,183,.8);animation:tabletScan 1.8s ease-in-out infinite alternate}
+    @keyframes tabletScan{from{transform:translateY(0);opacity:.35}to{transform:translateY(12px);opacity:1}}
+    .operator-legs{position:absolute;left:31px;bottom:0;width:56px;height:42px}
+    .operator-legs::before,.operator-legs::after{content:"";position:absolute;top:0;width:18px;height:42px;border-radius:999px;background:#0b2428}
+    .operator-legs::before{left:4px;transform:rotate(5deg)}.operator-legs::after{right:4px;transform:rotate(-7deg)}
+    .signal-beam{position:absolute;right:92px;bottom:118px;width:210px;height:1px;background:linear-gradient(90deg,transparent,#21c9b7,transparent);transform:rotate(-19deg);transform-origin:right center;opacity:.0;animation:beamFlash 3.2s ease-in-out infinite;z-index:2}
+    .signal-beam::before,.signal-beam::after{content:"";position:absolute;right:0;top:50%;width:70px;height:70px;border:1px solid rgba(33,201,183,.28);border-radius:50%;transform:translate(50%,-50%);animation:beamRing 3.2s ease-out infinite}
+    .signal-beam::after{animation-delay:.45s}
+    @keyframes beamFlash{20%,62%{opacity:.75}0%,100%{opacity:0}}
+    @keyframes beamRing{from{opacity:.8;transform:translate(50%,-50%) scale(.2)}to{opacity:0;transform:translate(50%,-50%) scale(1.45)}}
+    .metric{position:absolute;min-width:150px;border:1px solid rgba(249,246,239,.14);background:rgba(7,16,18,.72);border-radius:18px;padding:14px;color:#f9f6ef;animation:metricFloat 4.8s ease-in-out infinite}
+    .metric:nth-of-type(2){animation-delay:-1.2s}.metric:nth-of-type(3){animation-delay:-2.2s}
+    @keyframes metricFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .metric small{display:block;color:rgba(249,246,239,.52);font-size:11px;text-transform:uppercase;letter-spacing:.14em}
+    .metric strong{display:block;margin-top:8px;font-size:30px;letter-spacing:-.04em}
+    .m1{left:22px;top:22px}.m2{right:22px;top:120px}.m3{left:38px;bottom:28px}
+    .section{padding:96px 0}
+    .section.dark{background:#071012;color:#f9f6ef}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:36px}
+    .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:#0f8b8d;font-weight:700}
+    .section h2{margin-top:12px;font-size:clamp(34px,5vw,72px);line-height:.95;letter-spacing:-.06em;max-width:760px}
+    .section-desc{max-width:430px;font-size:16px;line-height:1.7;color:rgba(7,16,18,.6)}
+    .dark .section-desc{color:rgba(249,246,239,.62)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{border:1px solid rgba(7,16,18,.1);background:#fffaf0;border-radius:24px;padding:24px;min-height:260px}
+    .dark .card{border-color:rgba(249,246,239,.12);background:rgba(249,246,239,.055)}
+    .card-num{font-size:13px;color:#0f8b8d;font-weight:700}
+    .card h3{margin-top:52px;font-size:24px;letter-spacing:-.03em}
+    .card p{margin-top:14px;font-size:15px;line-height:1.65;color:rgba(7,16,18,.58)}
+    .dark .card p{color:rgba(249,246,239,.58)}
+    .screen-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+    .screen{border:1px solid rgba(249,246,239,.12);background:linear-gradient(135deg,rgba(249,246,239,.08),rgba(249,246,239,.03));border-radius:28px;padding:18px;min-height:430px}
+    .screen-title{display:flex;justify-content:space-between;color:rgba(249,246,239,.58);font-size:12px;text-transform:uppercase;letter-spacing:.14em}
+    .timeline{margin-top:28px;display:grid;gap:12px}
+    .row{display:grid;grid-template-columns:92px 1fr 70px;align-items:center;gap:14px;border:1px solid rgba(249,246,239,.1);border-radius:16px;padding:14px;color:rgba(249,246,239,.8)}
+    .bar{height:8px;border-radius:999px;background:rgba(249,246,239,.12);overflow:hidden}
+    .bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#21c9b7,#d8bc7e)}
+    .status-list{display:grid;gap:12px;margin-top:28px}
+    .status{border-radius:18px;background:#f9f6ef;color:#071012;padding:18px}
+    .status strong{display:block;font-size:32px;letter-spacing:-.05em}
+    .status span{display:block;margin-top:4px;color:rgba(7,16,18,.58);font-size:14px}
+    .impact{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .impact-item{border-top:1px solid rgba(7,16,18,.14);padding-top:18px}
+    .impact-item strong{font-size:44px;letter-spacing:-.06em}
+    .impact-item span{display:block;margin-top:8px;color:rgba(7,16,18,.58);line-height:1.45}
+    .footer{padding:48px 0 64px;background:#071012;color:#f9f6ef}
+    .footer-inner{display:flex;justify-content:space-between;gap:24px;align-items:center;border-top:1px solid rgba(249,246,239,.12);padding-top:24px;color:rgba(249,246,239,.58);font-size:14px}
+    @media(max-width:900px){.nav{display:none}.hero-inner,.screen-grid{grid-template-columns:1fr}.atlas-card{order:-1}.map-panel{min-height:390px}.section-head{display:block}.section-desc{margin-top:18px}.cards,.impact{grid-template-columns:1fr}.hero-inner{padding-top:96px}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top"><span class="mark"></span><span>Nordlys Atlas</span></a>
+      <nav class="nav">
+        <a href="#overview">Обзор</a>
+        <a href="#system">Система</a>
+        <a href="#interface">Интерфейс</a>
+        <a href="#impact">Итоги</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="shell hero-inner">
+        <div>
+          <div class="eyebrow">Data platform case study</div>
+          <h1>Карта рисков для арктических экспедиций</h1>
+          <p class="hero-copy">Nordlys Atlas — концепт операционной платформы, которая объединяет спутниковые сигналы, маршруты команд, погоду, ледовую обстановку и риски в одном спокойном интерфейсе.</p>
+          <div class="hero-actions">
+            <a class="pill primary" href="#interface">Смотреть интерфейс</a>
+            <a class="pill ghost" href="#overview">Разобрать кейс</a>
+          </div>
+        </div>
+        <div class="atlas-card" aria-label="Превью интерфейса Nordlys Atlas">
+          <div class="map-panel">
+            <div class="map-grid"></div>
+            <div class="scan-sweep" aria-hidden="true"></div>
+            <div class="route"></div>
+            <div class="route"></div>
+            <span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span>
+            <div class="weather-band" aria-hidden="true"><span>weather signal sweep / live data pass</span></div>
+            <div class="signal-beam" aria-hidden="true"></div>
+            <div class="operator-figure" aria-hidden="true">
+              <div class="operator-head"></div>
+              <div class="operator-visor"></div>
+              <div class="operator-body"></div>
+              <div class="operator-arm"></div>
+              <div class="operator-tablet"></div>
+              <div class="operator-legs"></div>
+            </div>
+            <div class="metric m1"><small>Ice drift</small><strong>12.4km</strong></div>
+            <div class="metric m2"><small>Risk window</small><strong>04h</strong></div>
+            <div class="metric m3"><small>Signal quality</small><strong>98%</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Задача</div>
+            <h2>Сделать сложные полевые данные понятными для решений.</h2>
+          </div>
+          <p class="section-desc">В экспедициях слишком много разрозненных источников: карты, спутниковые снимки, погодные окна, ручные отчеты и координаты групп. Кейс показывает, как это можно собрать в один продукт.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="card-num">01</div><h3>Сигналы</h3><p>Слои данных приводятся к единой временной шкале, чтобы команда видела изменения, а не набор отдельных отчетов.</p></article>
+          <article class="card"><div class="card-num">02</div><h3>Маршруты</h3><p>План и фактическое движение отображаются рядом с погодными окнами и зонами повышенного риска.</p></article>
+          <article class="card"><div class="card-num">03</div><h3>Решения</h3><p>Интерфейс не перегружает оператора, а подсвечивает только то, что требует внимания прямо сейчас.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="system">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Система</div>
+            <h2>Один экран для маршрутов, рисков и состояния команды.</h2>
+          </div>
+          <p class="section-desc">Вместо “дашборда ради дашборда” проект строится вокруг полевого сценария: где группа, что меняется вокруг нее и какое решение нужно принять.</p>
+        </div>
+        <div class="screen-grid">
+          <div class="screen">
+            <div class="screen-title"><span>Route health</span><span>Live</span></div>
+            <div class="timeline">
+              <div class="row"><span>Zone A</span><div class="bar"><span style="width:82%"></span></div><span>Low</span></div>
+              <div class="row"><span>Zone B</span><div class="bar"><span style="width:54%"></span></div><span>Watch</span></div>
+              <div class="row"><span>Zone C</span><div class="bar"><span style="width:28%"></span></div><span>Hold</span></div>
+              <div class="row"><span>Signal</span><div class="bar"><span style="width:94%"></span></div><span>Stable</span></div>
+              <div class="row"><span>Window</span><div class="bar"><span style="width:66%"></span></div><span>6h</span></div>
+            </div>
+          </div>
+          <div class="screen">
+            <div class="screen-title"><span>Summary</span><span>06:40 UTC</span></div>
+            <div class="status-list">
+              <div class="status"><strong>3</strong><span>критичных события за смену</span></div>
+              <div class="status"><strong>18</strong><span>маршрутных точек синхронизировано</span></div>
+              <div class="status"><strong>4.2h</strong><span>до следующего безопасного окна</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="interface">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Интерфейс</div>
+            <h2>Холодная визуальная система без лишнего шума.</h2>
+          </div>
+          <p class="section-desc">Палитра, сетка и компоненты сделаны так, чтобы продукт ощущался техническим, но не тяжелым. Бирюзовый акцент используется только для живых сигналов и приоритетов.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="card-num">A</div><h3>Layer cards</h3><p>Карточки слоев показывают источник, качество сигнала и обновление без переходов между разделами.</p></article>
+          <article class="card"><div class="card-num">B</div><h3>Risk rail</h3><p>Боковая шкала группирует события по срочности и помогает быстро пройти смену.</p></article>
+          <article class="card"><div class="card-num">C</div><h3>Calm map</h3><p>Карта оставляет достаточно воздуха, чтобы оператор видел направление, а не боролся с интерфейсом.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="impact">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Итоги концепта</div>
+            <h2>Кейс показывает продуктовый подход, а не просто красивый экран.</h2>
+          </div>
+        </div>
+        <div class="impact">
+          <div class="impact-item"><strong>5</strong><span>ключевых источников данных объединены в одну модель</span></div>
+          <div class="impact-item"><strong>3</strong><span>операторских сценария: маршрут, риск, отчет</span></div>
+          <div class="impact-item"><strong>24h</strong><span>логика смены и событийной ленты</span></div>
+          <div class="impact-item"><strong>1</strong><span>единая дизайн-система для полевого продукта</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <span>Nordlys Atlas — portfolio case concept</span>
+      <span>UX / UI / Data product / Frontend concept</span>
+    </div>
+  </footer>
+</body>
+</html>
